@@ -1,0 +1,30 @@
+<?php
+
+class BakeryUserTests extends DrupalWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Bakery User Test',
+      'description' => 'Checks that when a user logs in they are redirected to a page at URL welcome. This page should display the message Welcome to Camerons Bakery! and its title should be Hi There!.',
+      'group' => 'Epicodus Example Tests',
+    );
+  }
+
+  public function setUp() {
+    parent::setUp(array('bakery_user'));
+  }
+
+  public function testLoginWelcome() {
+    $user = $this->drupalCreateAuthenticatedUser();
+    $this->drupalLogin($user);
+    $this->assertText("Welcome to Cameron's Bakery!", 'The user was successfully redirected. Woot!');
+  }
+
+  public function drupalCreateAuthenticatedUser(array $permissions = array()) {
+    $roles = user_roles();
+    $index = array_search('authenticated', $roles);
+    $user = $this->drupalCreateUser($permissions);
+    $user->roles[$index] = 'authenticated';
+    return user_save($user);
+  }
+}
